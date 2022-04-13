@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+
+  db:
+    restart: always
+    image: mongo
+    volumes:
+      - ./database:/data/db
+    ports:      
+      - 27017:27017  
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME:-root}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${DB_NAME:-books_library}
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=db
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USERNAME:-root}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASSWORD:-password}
+    depends_on:
+      - db        
+
+  api:
+    restart: always
+    environment:
+      - PORT=3001
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_URL=${DB_URL_D}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - SALT=${SALT}
+    build: .
+    #volumes:
+    #  - ./src:/code/src
+    ports:      
+      - 8080:3001
+      
