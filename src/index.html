@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <title>TEST</title>
+</head>
+<body>
+	<div class="container">
+		TEST
+		<form action="/api/signin" method="post">
+			<input type="text" name="email" value="kulagin@netology.ru" />
+			<input type="text" name="password" value="ad service" />
+			<input type="submit" />
+		</form>
+		<button id="wsconnect" value="подключиться" />
+
+	</div>
+
+	<script>
+		const connstate = document.getElementById('wsconnect')
+		connstate.addEventListener('click', (e) => {
+			e.preventDefault()
+			const socket = io.connect('/')
+		
+			socket.on('asd', (data) => {
+				console.log(data)
+			})
+			
+		
+			//CONNECT-DISCONNECT
+			socket.on('connect', () => {
+				console.log('online')
+				//socket.emit('getHistory', '62765aab2966a1aa0b3cc3fb')
+			})
+			socket.on('disconnect', () => {
+				console.log('offline')
+			})  
+		})
+		
+	
+	
+	</script>        
+	</body>
+	</html>
