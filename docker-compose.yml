@@ -5,10 +5,10 @@ services:
   db:
     restart: always
     image: mongo
-    volumes:
-      - ./database:/data/db
-    ports:      
-      - 27017:27017  
+    #volumes:
+    #  - ./database:/data/db
+    #ports:      
+    #  - 27017:27017  
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME:-root}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD:-password}
