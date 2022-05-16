@@ -17,57 +17,54 @@ router.post('/uploader', uploader.single('adv-img'), async (req, res) => {
 
 //GET
 router.get('/advertisements',
-	async (req, res) => {
+	async (req, res, next) => {
 		try {
 			const allAdvs = await Advertisement.find()
 			res.json(allAdvs)
-		} catch (e) {
-			res.status(500).json({error: e})
+		} catch(e) {
+			next(e)
 		}
-		
 	}
 )
 router.get('/advertisements/:id',
-	async (req, res) => {
+	async (req, res, next) => {
 		try {
 			const adv = await Advertisement.find({id: req.params.id})
 			res.json(adv)
 		} catch (e) {
-			res.status(500).json({error: e})
-		}
-		
+			next(e)
+		}		
 	}
 )
-
 
 router.post('/advertisements',
 	onlyForAuthenticated,
 	uploader.array('adv-imgs'),
-	async (req, res) => {
-		const images = req.files.map(f => f.filename)
-		const { shortText, description } = req.body
-		const datenow = Date.now()
-		const newAdv = await Advertisement.create({ shortText, description, images, userId: req.session.passport.user, createdAt: datenow, updatedAt: datenow, tags: [], isDeleted: false })
-		
-		if(newAdv) res.status(201).json(newAdv)
-		else res.status(500).json({error: 'Невалидные данные', status: 'error'})
+	async (req, res, next) => {		
+		try{
+			const images = req.files.map(f => f.filename)
+			const { shortText, description } = req.body
+			const datenow = Date.now()
+			const newAdv = await Advertisement.create({ shortText, description, images, userId: req.session.passport.user, createdAt: datenow, updatedAt: datenow, tags: [], isDeleted: false })
+			if(newAdv) res.status(201).json(newAdv)
+		} catch (e) {
+			next(e)
+		}
 	}
 )
 router.delete('/advertisements/:id',
 	onlyForAuthenticated,
-	async (req, res) => {
+	async (req, res, next) => {
 		try {
 			const adv = await Advertisement.adv.findById(req.params.id)
 			if(adv && !adv.isDeleted) {
-				console.log(adv.userId, req.session.passport.user)
 				if(adv.userId != ObjectID(req.session.passport.user)) return res.status(403).json({status: 'forbidden'})
 				adv.isDeleted = true
 				await adv.save()
 				res.json({status: 'ok'})
-			} else res.status(404).json({status: 'not found'})
-						
+			}					
 		} catch (e) {
-			res.status(500).json({error: e})
+			next(e)
 		}
 	}
 )

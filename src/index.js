@@ -51,24 +51,22 @@ io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 //io.use((socket, next) => sessionMW(socket.request, {}, next))
 
-//const error404 = require('./middleware/error404')
-//const error500 = require('./middleware/error500')
+const error404 = require('./middleware/error404')
+const error500 = require('./middleware/error500')
 
 app.use(passport.initialize())
 app.use(passport.session())
 
 const userApi = require('./routes/user')
 const advApi = require('./routes/adv')
-const chatApi = require('./routes/chat')
 app.use('/api', userApi)
 app.use('/api', advApi)
-app.use('/api', chatApi)
-//app.use('/static', express.static(__dirname + '/public/assets'))
-//app.use(error404)
-//app.use(error500)
+app.use('/static', express.static(__dirname + '/public/assets'))
+app.use(error404)
+app.use(error500)
 
 //WS
-const ioHandlers = require('./routes/chatio')
+const ioHandlers = require('./services/chatio')
 io.on('connection', (socket) => ioHandlers(io, socket))
 //TEST WS
 app.get('/', (req, res) => {

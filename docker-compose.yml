@@ -33,7 +33,7 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - DB_URL=${DB_URL_D}
+      - DB_URL=${DB_URL}
       - COOKIE_SECRET=${COOKIE_SECRET}
       - SALT=${SALT}
     build: .
